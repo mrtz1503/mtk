@@ -1,0 +1,12 @@
+get_filename_component(WUI_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${WUI_CMAKE_DIR})
+
+list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+if(NOT TARGET wui::wui)
+    include("${JSONUTILS_CMAKE_DIR}/wuiTargets.cmake")
+endif()
+
+set(WUI_LIBRARIES wui::wui)
