@@ -28,6 +28,11 @@ namespace mtk {
         //bool is_visible();
 
 
+        virtual void draw(canvas& c) override
+        {
+            c.line(10, 10, 200, 200);
+        };
+
 
         std::string get_name() const;
 

@@ -10,9 +10,11 @@
 #include "mtk/window.h"
 #include "win32.h"
 #include "mtk/driver/graphics_driver.h"
+#include "../gdiplus/gdiplus_graphics_driver.h"
 
 // test 
-#include <d2d1.h>
+#include <gdiplus.h>
+#include <mtk/color.h>
 
 namespace mtk {
 
@@ -42,18 +44,29 @@ namespace mtk {
                 }
                 break;
 
+                case WM_SIZE:
+                {
+                    w->resize({ w->scale(LOWORD(lparam)), w->scale(HIWORD(lparam)) });
+                }
+
                 case WM_PAINT:
                 {
-                    
-                        graphics_driver drv(::GetDC(hwnd));
-                        drv.color(colors::black);
+                    PAINTSTRUCT ps = { };
+                    HDC hdc = ::BeginPaint(hwnd, &ps);
 
 
-                        drv.line(10, 10, 10, 200);
+                    gdiplus_graphics_driver ggd(hdc);
+                    ggd.begin();
 
+                    canvas cv(w, &ggd);
+                    cv.fill(colors::white);
+                    w->draw(cv);
+
+
+
+                    ::EndPaint(hwnd, &ps);
                 }
-                break;
-
+                return 0;
 
             }
         }
@@ -72,6 +85,8 @@ namespace mtk {
             wc.lpszClassName = name;
 
             wc.hbrBackground = nullptr;
+            //wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+
             wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
             wc.lpfnWndProc = window_procedure;
             wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;

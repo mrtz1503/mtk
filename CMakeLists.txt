@@ -4,7 +4,7 @@ project(mtk VERSION 1.0.0 LANGUAGES CXX)
 
 # options
 option(MTK_BUILD_EXAMPLES "Build example" ON)
-option(GDI "Use of GDI" ON)
+option(GDIPLUS "Use of GDI+" ON)
 
 
 
@@ -18,6 +18,7 @@ set(SOURCE_FILES
     util.cpp
     widget.cpp
     window.cpp
+    canvas.cpp
 )
 
 
@@ -26,9 +27,9 @@ if (WIN32)
     list(TRANSFORM PLATFORM_SOURCES PREPEND "src/driver/windows/")
 endif()
 
-if (GDI) 
-    set(GRAPHICS_SOURCES gdi_graphics_driver.cpp)
-    list(TRANSFORM GRAPHICS_SOURCES PREPEND "src/driver/gdi/")
+if (GDIPLUS) 
+    set(GRAPHICS_SOURCES gdiplus_graphics_driver.cpp)
+    list(TRANSFORM GRAPHICS_SOURCES PREPEND "src/driver/gdiplus/")
 endif()
 
 
@@ -46,7 +47,7 @@ target_include_directories(mtk
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Comctl32.lib Shcore.lib d2d1.lib)
+target_link_libraries(${PROJECT_NAME} PUBLIC Comctl32.lib Shcore.lib Gdiplus.lib)
 
 
 

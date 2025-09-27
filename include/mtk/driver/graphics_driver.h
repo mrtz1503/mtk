@@ -5,24 +5,26 @@
 
 namespace mtk {
 
+    // abstract base class
     class graphics_driver {
     public:
 
-        graphics_driver(void* context);
-        ~graphics_driver();
+        virtual void begin() = 0;
+        
+        // lines
+        virtual void line(int x1, int y1, int x2, int y2) = 0;
+        
+        // rectangels
+        virtual void rect_fill(int x, int y, int width, int height) = 0;
+        
 
-        void color(mtk::color c);
-
-        void line(int x1, int y1, int x2, int y2);
+        // color stuff
+        virtual void color(const color& c) = 0;
 
 
 
     private:
 
-        struct ctx;
-        std::unique_ptr<graphics_driver::ctx> m_ctx;
-
-        mtk::color m_color;
 
     };
 

@@ -3,8 +3,8 @@
 #include "mtk/rect.h"
 #include "mtk/point.h"
 #include "mtk/size.h"
+#include "mtk/canvas.h"
 
-#include "mtk/driver/graphics_driver.h"
 
 namespace mtk{
 
@@ -18,7 +18,7 @@ namespace mtk{
 		*	VISIBILITY
 		*/
 
-		void show();
+		void show(canvas &canva);
 		//void hide();
 
 
@@ -54,7 +54,7 @@ namespace mtk{
 		*	DRAWING
 		*/
 
-		virtual void draw() {};
+		virtual void draw(canvas &c) {};
 
 
 	private:

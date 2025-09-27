@@ -4,13 +4,14 @@
 
 #include "mtk/driver/graphics_driver.h"
 
+
 namespace mtk {
 
     class box : public group {
     public:
 
 
-        virtual void draw() override
+        virtual void draw(canvas &c) override
         {
 
             
