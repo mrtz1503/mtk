@@ -19,6 +19,11 @@ namespace mtk {
 
         std::vector<widget*> children() const;
 
+
+        virtual void resize(const mtk::size& sz) override;
+        virtual void draw(canvas& c) override;
+
+
     private:
 
         std::vector<widget*> m_children;

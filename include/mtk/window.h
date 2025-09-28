@@ -16,25 +16,18 @@ namespace mtk {
 
     class window_driver;
 
+
     class window : public group {
     public:
         friend class graphics_driver;
-
-
 
         window(std::string name, const rect& bounds = { 100,100,900,700 });
 
         void show();
         //bool is_visible();
 
-
-        virtual void draw(canvas& c) override
-        {
-            c.line(10, 10, 200, 200);
-        };
-
-
         std::string get_name() const;
+
 
     protected:
         window_driver& driver();

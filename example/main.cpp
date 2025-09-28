@@ -1,6 +1,7 @@
 #include <mtk/app.h>
 #include <mtk/window.h>
 #include <mtk/box.h>
+#include <mtk/color.h>
 
 #include <iostream>
 
@@ -11,13 +12,21 @@ int main()
         mtk::app app;
 
         mtk::window window("mtk window");
-        window.show();
 
-        mtk::box b;
+        mtk::box a(mtk::colors::black);
+        window.add(&a);
 
+        mtk::box b(mtk::colors::gray);
         window.add(&b);
 
+        mtk::box c(mtk::colors::white);
+        window.add(&c);
+        
+        mtk::box d(mtk::colors::black);
+        window.add(&d);
 
+
+        window.show();
 
 
 

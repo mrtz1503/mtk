@@ -16,9 +16,8 @@ namespace mtk {
 
 
 
-    window::window(std::string name, const rect &bounds) : group(bounds), m_name(std::move(name))  {};
+    window::window(std::string name, const rect& bounds) : group(bounds), m_name(std::move(name)) {};
 
-    
 
     void window::show()
     {
@@ -29,12 +28,14 @@ namespace mtk {
     {
         return m_name;
     }
-    
+
     window_driver& window::driver()
     {
         return m_drv;
     }
 
    
+
+
 
 }

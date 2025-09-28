@@ -15,6 +15,7 @@ namespace mtk {
         virtual void line(int x1, int y1, int x2, int y2) = 0;
         
         // rectangels
+        virtual void rect(int x, int y, int width, int height) = 0;
         virtual void rect_fill(int x, int y, int width, int height) = 0;
         
 

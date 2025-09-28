@@ -18,7 +18,7 @@ namespace mtk{
 		*	VISIBILITY
 		*/
 
-		void show(canvas &canva);
+		void show();
 		//void hide();
 
 
@@ -43,18 +43,19 @@ namespace mtk{
 		void move(const point& pos);
 
 		sz size() const;
-		void resize(const sz& size);
+		virtual void resize(const sz& size);
 
-		int scale(int n) const ;
+		/*int scale(int n) const ;
+		int unscale(int n) const ;
 		float get_scale() const;
-		void set_scale(float scale);
+		void set_scale(float scale);*/
 
 
 		/*
 		*	DRAWING
 		*/
 
-		virtual void draw(canvas &c) {};
+		virtual void draw(canvas &) {};
 
 
 	private:

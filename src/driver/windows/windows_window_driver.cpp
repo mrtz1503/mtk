@@ -20,17 +20,17 @@ namespace mtk {
 
     LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
-        window* w = reinterpret_cast<window*>(::GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+        window_driver* d = reinterpret_cast<window_driver*>(::GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 
-        if (w != nullptr)
+        if (d != nullptr)
         {
+            window* w = d->window();
             std::cout << get_msg_str(msg) << " -> " << w->get_name() << "\n";
-        }
 
-        if (w != nullptr)
-        {
             switch (msg)
             {
+
+
                 case WM_CLOSE:
                 {
                     ::PostQuitMessage(0);
@@ -40,29 +40,40 @@ namespace mtk {
                 case WM_DPICHANGED:
                 {
                     int dpi = HIWORD(wparam);
-                    w->set_scale(static_cast<float>(dpi) / USER_DEFAULT_SCREEN_DPI);
+
+                    LPRECT prc = reinterpret_cast<LPRECT>(lparam);
+                    ::MoveWindow(hwnd, prc->left, prc->right, prc->right - prc->left, prc->bottom - prc->top, TRUE);
+
+                    d->set_scale(static_cast<float>(dpi) / USER_DEFAULT_SCREEN_DPI);
+
+                    RECT rc = {};
+                    ::GetClientRect(hwnd, &rc);
+                    w->move({ d->unscale(rc.left), d->unscale(rc.right) });
+                    w->resize({ d->unscale(rc.right - rc.left), d->unscale(rc.bottom - rc.top) });
+
+
                 }
                 break;
 
+
                 case WM_SIZE:
                 {
-                    w->resize({ w->scale(LOWORD(lparam)), w->scale(HIWORD(lparam)) });
+                    w->resize({ d->unscale(LOWORD(lparam)), d->unscale(HIWORD(lparam)) });
                 }
+                break;
+
 
                 case WM_PAINT:
                 {
                     PAINTSTRUCT ps = { };
                     HDC hdc = ::BeginPaint(hwnd, &ps);
 
-
-                    gdiplus_graphics_driver ggd(hdc);
+                    gdiplus_graphics_driver ggd(d, hdc);
                     ggd.begin();
 
                     canvas cv(w, &ggd);
                     cv.fill(colors::white);
                     w->draw(cv);
-
-
 
                     ::EndPaint(hwnd, &ps);
                 }
@@ -106,24 +117,29 @@ namespace mtk {
 
         HWND handle = nullptr;
 
+        float scale = 1.0;
+
     };
 
 
-    window_driver::window_driver() : m_ctx(std::make_unique<window_driver::context>()) {};
+    window_driver::window_driver() : m_window(nullptr),  m_ctx(std::make_unique<window_driver::context>()) {};
 
     window_driver::~window_driver() = default;
 
 
-    void window_driver::create(window* w)
+    void window_driver::create(mtk::window* w)
     {
         static init_window_class wc;
 
-        w->set_scale(static_cast<float>(::GetDpiForSystem()) / USER_DEFAULT_SCREEN_DPI);
+        m_window = w;
+
+        m_scale = (static_cast<float>(::GetDpiForSystem()) / USER_DEFAULT_SCREEN_DPI);
+
 
         m_ctx->handle = ::CreateWindowExW(0,
                                           wc.name, utf8_to_wchar(w->get_name()).c_str(), WS_OVERLAPPEDWINDOW,
-                                          w->scale(w->position().x), w->scale(w->position().y),
-                                          w->scale(w->size().width), w->scale(w->size().height),
+                                          scale(w->position().x), scale(w->position().y),
+                                          scale(w->size().width), scale(w->size().height),
                                           nullptr, nullptr, ::GetModuleHandleW(nullptr), nullptr);
 
         if (m_ctx->handle == nullptr)
@@ -132,13 +148,18 @@ namespace mtk {
         }
 
 
-
-        ::SetWindowLongPtrW(m_ctx->handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(w));
+        ::SetWindowLongPtrW(m_ctx->handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
         ::ShowWindow(m_ctx->handle, SW_SHOW);
     }
 
 
+    void window_driver::resize(const size& sz)
+    {
+        ::SetWindowPos(m_ctx->handle, 0, 0, 0, sz.width, sz.height, SWP_NOMOVE | SWP_NOZORDER);
+    }
+
+    mtk::window* window_driver::window() const { return m_window; };
 
 
 

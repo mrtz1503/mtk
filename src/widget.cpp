@@ -43,14 +43,19 @@ namespace mtk {
         m_bounds.bottom = m_bounds.top + sz.height;
     }
 
-    int widget::scale(int n) const
+    /*int widget::scale(int n) const
     {
         return n * m_scale;
     }
 
+    int widget::unscale(int n) const
+    {
+        return n / m_scale;
+    }
+
 
     float widget::get_scale() const { return m_scale; }
-    void widget::set_scale(float scale) { m_scale = scale; }
+    void widget::set_scale(float scale) { m_scale = scale; }*/
 
 
 

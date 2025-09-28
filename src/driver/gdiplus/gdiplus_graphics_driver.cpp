@@ -2,6 +2,8 @@
 
 #include "gdiplus_graphics_driver.h"
 
+#include "mtk/driver/window_driver.h"
+
 namespace mtk {
 
 
@@ -21,7 +23,7 @@ namespace mtk {
 
     void gdiplus_graphics_driver::line(int x1, int y1, int x2, int y2)
     {
-    
+
         Gdiplus::Graphics g(m_hdc);
 
         Gdiplus::Pen pen(Gdiplus::Color(255, 0, 0, 0));
@@ -34,13 +36,18 @@ namespace mtk {
 
     };
 
+    void gdiplus_graphics_driver::rect(int x, int y, int width, int height)
+    {
+        Gdiplus::Pen pen(m_color);
+        m_graphics->DrawRectangle(&pen, m_drv->scale(x), m_drv->scale(y), 
+                                  m_drv->scale(width), m_drv->scale(height));
+    }
+
 
     void gdiplus_graphics_driver::rect_fill(int x, int y, int width, int height)
     {
         Gdiplus::SolidBrush brush(m_color);
-        m_graphics->FillRectangle(&brush, x, y, width, height);
-
-    
+        m_graphics->FillRectangle(&brush, m_drv->scale(x), m_drv->scale(y), m_drv->scale(width), m_drv->scale(height));
     };
 
     //graphics_driver::graphics_driver(void* context) : m_ctx(std::make_unique<graphics_driver::ctx>())
